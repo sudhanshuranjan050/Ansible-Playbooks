@@ -1,0 +1,30 @@
+- hosts : Web Server
+  tasks:
+          - name: "Install httpd"
+            package :
+                    name: "httpd"
+                    state : present
+
+          - name : "Copy"
+            copy :
+                src : "my.html"
+                dest : "/var/www/html/"
+          - service :
+                name : "httpd"
+                state : started
+                enabled : yes
+
+- hosts: LoadBalancers
+  tasks:
+          - name: " Install HAProxy Software"
+            package:
+                    name: "haproxy"
+
+          - template:
+                  dest: "/etc/haproxy/"
+                  src : "haproxy.cfg"
+
+          - service:
+                  name: "haproxy"
+                  state: restarted
+
