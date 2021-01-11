@@ -1,0 +1,61 @@
+- hosts : datanode
+  gather_facts : no
+  vars_prompt :
+          - name : ndir
+            prompt : "Enter Name Data Directory Name "
+            private : no
+
+          - name  : nip
+            prompt : " Enter the NameNode IP: "
+            private : no
+
+  tasks :
+        - name  : Java Software
+          shell  : "rpm -ivh jdk-8u171-linux-x64.rpm"
+          ignore_errors : True
+
+
+        - name : Hadoop Software
+          shell : "rpm -ivh hadoop-1.2.1-1.x86_64.rpm --force"
+          ignore_errors : True
+
+        - name: Creating DataNode Directory
+          file:
+                path: "{{ ndir }}"
+                state: directory
+        
+        - name: Configuring hdfs-site.xml
+          blockinfile:
+                path: /etc/hadoop/hdfs-site.xml
+                insertafter: "<configuration>"
+                block:
+                 <property>
+                 <name>dfs.data.dir</name>
+                 <value>{{ ndir }}</value>
+                 </property>
+
+
+        - name: Configuring core-site.xml file
+          blockinfile:
+                path: /etc/hadoop/core-site.xml
+                insertafter: "<configuration>"
+                block:
+                        <property>
+                        <name>fs.default.name</name>
+                        <value>hdfs://{{ nip }}:9001</value>
+                        </property>
+
+        - name: Formatting Data Node Directory
+          command: " echo Y | hadoop datanode -format"
+          ignore_errors: True
+
+
+        - name: Starting hadoop DataNode services
+          command: "hadoop-daemon.sh start datanode"
+          ignore_errors: True
+
+
+        - name: Checking status of Data Node Services
+          shell: "jps"
+          ignore_errors: True
+

@@ -1,0 +1,41 @@
+- hosts : Enter host IP
+  tasks :
+          - file :
+                  state : directory
+                  path : "dvd1"
+
+          - mount :
+                  src : "/dev/cdrom"
+                  path : "dvd1"
+                  state : mounted
+                  fstype : "iso9660"
+
+          - yum_repository :
+                  baseurl : "dvd1/AppStream"
+                  name : "mydvd1"
+                  description : "dvd1 for yum"
+                  gpgcheck : no
+
+          - yum_repository :
+                  baseurl : "dvd1/BaseOS"
+                  name : "mydvd2"
+                  description : "dvd2 for yum"
+                  gpgcheck : no
+                 
+          - package :
+                name : "httpd"
+                state : present
+          - copy :
+                src : "my.html"
+                dest : "/var/www/html/"
+
+          - service :
+                  name : "httpd"
+                  state : started
+
+          - firewalld :
+                  port : "80/tcp"
+                  state : enabled
+                  permanent : yes
+                  immediate : yes 
+                       

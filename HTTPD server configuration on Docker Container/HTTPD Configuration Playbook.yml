@@ -1,0 +1,40 @@
+- hosts : Enter Host IP
+  tasks :
+          - name : ADD_repository
+            yum_repository : 
+                name : docker
+                description : Docker repo
+                baseurl : "https://download.docker.com/linux/centos/7/x86_64/stable/"
+                gpgcheck: no
+           
+          - command : "yum install docker-ce --nobest -y"      
+         
+
+          - name : 
+            service :
+                    name : "docker"
+                    state : started
+
+          - pip:
+                  name : docker
+
+          - name : Pull the httpd Docker Images
+            docker_image :
+                    name : "httpd"
+                    source  : pull 
+
+          - name : Copy webpage
+            copy :
+                    src : "my.html"
+                    dest : /home
+
+          - name : container creation
+            docker_container : 
+                    name : webos
+                    image : httpd
+                    state : started
+                    ports : 
+                       - "8080:80"
+                    volumes:
+                       - /home:/usr/local/apache2/htdocs          
+

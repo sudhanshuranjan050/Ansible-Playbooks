@@ -1,0 +1,16 @@
+- name : Ansible AWS
+  hosts: localhost
+  tasks:
+          - name : Launching AWS instance using Ansible
+            ec2_instance:
+                    name : AWS_instance_os
+                    key_name: awsall2020
+                    instance_type: t2.micro
+                    image_id: ami-04b1ddd35fd71475a
+                    region: ap-south-1
+                    state : present
+                    security_group: sg-086741ca6802d0e74
+                    vpc_subnet_id : subnet-bbc2bdf7
+                    aws_access_key: 
+                    aws_secret_key: 
+
